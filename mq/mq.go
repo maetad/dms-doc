@@ -70,7 +70,6 @@ func Received(db *gorm.DB) {
 
 	go func() {
 		for d := range msgs {
-			log.Printf(d.RoutingKey)
 			switch d.RoutingKey {
 			case "user.create":
 				var body user.User
@@ -85,7 +84,10 @@ func Received(db *gorm.DB) {
 				db.Model(&user.User{}).Where("id = ?", body.ID).Updates(user.User{FirstName: body.FirstName, LastName: body.LastName})
 				break
 			case "user.delete":
-				db.Delete(&user.User{}, d.Body)
+				var body user.User
+				json.Unmarshal([]byte(d.Body), &body)
+
+				db.Delete(&user.User{}, body.ID)
 				break
 			}
 		}
