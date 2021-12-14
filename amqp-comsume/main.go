@@ -1,11 +1,15 @@
-package mq
+package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/streadway/amqp"
-	"gitlab.com/pakkaparn/dms-doc/user"
+	"gitlab.com/pakkaparn/dms-doc/amqp-consume/user"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +19,20 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func Received(db *gorm.DB) {
+func main() {
+	if err := godotenv.Load("../.env.database", "../.env"); err != nil {
+		log.Fatal("Error loading environment file")
+	}
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s", os.Getenv("DB_HOST"), os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_DB"), os.Getenv("DB_PORT"), os.Getenv("DB_TIMEZONE"))
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&user.User{})
+
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()

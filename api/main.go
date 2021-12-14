@@ -7,15 +7,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"gitlab.com/pakkaparn/dms-doc/doc"
-	"gitlab.com/pakkaparn/dms-doc/mq"
-	"gitlab.com/pakkaparn/dms-doc/user"
+	"gitlab.com/pakkaparn/dms-doc/api/doc"
+	"gitlab.com/pakkaparn/dms-doc/api/user"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	if err := godotenv.Load(".env.database", ".env"); err != nil {
+	if err := godotenv.Load("../.env.database", "../.env"); err != nil {
 		log.Fatal("Error loading environment file")
 	}
 
@@ -38,8 +37,6 @@ func main() {
 	r.GET("/:id", docHandler.FindDoc)
 	r.PUT("/:id", docHandler.UpdateDoc)
 	r.DELETE("/:id", docHandler.DeleteDoc)
-
-	mq.Received(db)
 
 	r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 }
