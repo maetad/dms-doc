@@ -1,24 +1,26 @@
 package doc
 
 import (
-	"os/user"
-
+	"gitlab.com/pakkaparn/dms-doc/user"
 	"gorm.io/gorm"
 )
 
-type DocType int64
+type DocType string
 
 const (
-	File DocType = iota
-	Folder
+	File   DocType = "file"
+	Folder         = "folder"
 )
 
 type Doc struct {
 	gorm.Model
-	Name string
-	Type DocType
-	Docs []Doc
-	User user.User
+	Name   string  `json:"name" binding:"required"`
+	Type   DocType `json:"type" binding:"required"`
+	UserID uint    `json:"user_id" binding:"required"`
+	User   user.User
+	// ParentID *uint  `json:"child_id"`
+	// Parent   *Doc   `gorm:"foreignKey:ParentID;references:ID"`
+	// Children []*Doc `gorm:"foreignKey:ID;references:ParentID"`
 }
 
 func (Doc) TableName() string {

@@ -6,8 +6,6 @@ services:
     env_file:
       - .env.database
     volumes:
-      - data-database:/var/lib/postgresql/data/
+      - ./data/database:/var/lib/postgresql/data/
     ports:
       - 9921:5432
-volumes:
-  data-database:

@@ -1,5 +1,6 @@
 .env
 .env.database
+data/database
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/go,macos,windows

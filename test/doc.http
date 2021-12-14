@@ -1,0 +1,39 @@
+@base_url = http://localhost:8081
+@id = 1
+
+GET {{base_url}} HTTP/1.1
+
+###
+
+# @name create
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "pakkaparn",
+    "password": "password",
+    "first_name": "Maetad",
+    "last_name": "Sukarasud"
+}
+
+@id = {{create.response.body.ID}}
+
+###
+
+GET {{base_url}}/{{id}} HTTP/1.1
+
+###
+
+PUT {{base_url}}/{{id}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "username",
+    "password": "password",
+    "first_name": "New Maetad",
+    "last_name": "Sukarasud"
+}
+
+###
+
+DELETE {{base_url}}/{{id}} HTTP/1.1
